@@ -2,6 +2,7 @@ from model.product import Product
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import pandas as pd
+import os
 
 
 def add_product(db: sessionmaker, new_product_data: Product) -> str:
@@ -40,7 +41,8 @@ def get_all_product(db: sessionmaker) -> "list[Product]":
 
 
 def record_csv_db(db: sessionmaker, user_id: int) -> str:
-    df: pd.DataFrame = pd.read_csv("app/files/file.csv")
+    file_path = "app/files/file.csv"
+    df: pd.DataFrame = pd.read_csv(file_path)
 
     for index, row in df.iterrows():
         product = Product(
@@ -54,4 +56,5 @@ def record_csv_db(db: sessionmaker, user_id: int) -> str:
         )
         db.add(product)
     db.commit()
+    os.remove(file_path)
     return "OK"

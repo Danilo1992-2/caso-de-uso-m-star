@@ -54,7 +54,6 @@ def delete_product(product_code: int) -> str:
 
 def process_csv_file() -> str:
     user_id = request.form.get("user_id")
-    print(user_id)
     if user_id == None:
         return jsonify({"error": "id do usuário não informado"}), 400
 
