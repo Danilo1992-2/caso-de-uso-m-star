@@ -14,16 +14,22 @@ def add_product(db: sessionmaker, new_product_data: Product) -> str:
     new_product.createat = datetime.now()
     db.add(new_product)
     db.commit()
+    db.close_all()
     return f"{new_product.product_name} - registrado"
 
 def remove_product(db: sessionmaker, product_data: Product) -> str:
     db.delete(product_data)
     db.commit()
+    db.close_all()
     
     return f"{product_data.product_name} - Removido"
 
 def get_product_by_code(db: sessionmaker, product_code: str) -> Product:
-    return db.query(Product).filter(Product.product_code == product_code).first()
+    data = db.query(Product).filter(Product.product_code == product_code).first()
+    db.close_all()
+    return data
 
 def get_all_product(db: sessionmaker) -> 'list[Product]':
-    return db.query(Product).all()
+    data = db.query(Product).all()
+    db.close_all()
+    return data

@@ -5,7 +5,7 @@ from schemas.product_schema import ProductSchema
 from services.product_services import add_product
 from services.product_services import get_product_by_code
 from services.product_services import get_all_product
-
+from services.product_services import remove_product
 
 def create_product() -> str:
     data: Product = request.get_json()
@@ -38,5 +38,8 @@ def get_all_products() -> 'list[dict]':
     return jsonify({"Response": products_data}), 200
 
 
-def delete_product():
-    ...
+def delete_product(product_code: int) -> str:
+    result = get_product_by_code(SessionLocal() ,product_code)
+    delete = remove_product(SessionLocal(), result)
+    
+    return jsonify({"Response": f"{delete}"})
