@@ -1,7 +1,6 @@
-from sqlalchemy import (Column, Integer, String, Date, ForeignKey)
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from config import Base
-
 
 
 class Product(Base):
@@ -12,6 +11,6 @@ class Product(Base):
     product_code: str = Column(String(10))
     product_manufacturer: str = Column(String(20))
     description: str = Column(String(200))
-    createat: Date = Column(Date())
-    user_id: int = Column(Integer, ForeignKey('user.id'))
-    user = relationship('User', back_populates='product', uselist=False)
+    createat: DateTime = Column(DateTime())
+    user_id: int = Column(Integer, ForeignKey("user.id"))
+    user = relationship("User", back_populates="product", uselist=False)

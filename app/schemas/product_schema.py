@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields
 
+
 class ProductSchema(Schema):
     id: int = fields.Integer()
     product_name: str = fields.Str(required=True)
