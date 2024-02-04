@@ -8,6 +8,25 @@ from services.product_services import get_all_product
 from services.product_services import remove_product
 
 def create_product() -> str:
+    """
+    Adiciona um novo produto
+    ---
+    parameters:
+      - name: name
+        in: /products
+        type: string
+        required: true
+        description: Nome do usuário
+    responses:
+      200:
+        description: Mensagem de cumprimento
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Mensagem de cumprimento
+        """
     data: Product = request.get_json()
     product_schema = ProductSchema()
     errors = product_schema.validate(data)
@@ -42,4 +61,4 @@ def delete_product(product_code: int) -> str:
     result = get_product_by_code(SessionLocal() ,product_code)
     delete = remove_product(SessionLocal(), result)
     
-    return jsonify({"Response": f"{delete}"})
+    return jsonify({"Response": f"{delete}"}), 200
