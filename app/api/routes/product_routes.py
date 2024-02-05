@@ -9,6 +9,7 @@ from services.product_services import get_all_product
 from services.product_services import remove_product
 from services.product_services import record_csv_db
 from services.user_services import get_user_by_id
+from services.item_services import get_product_item_exist
 
 
 def create_product() -> str:
@@ -30,7 +31,7 @@ def product_by_code(product_code: int) -> dict:
     if result == None:
         return (
             jsonify({"Response": "Nenhum produto encontrado, verifique o código."}),
-            200,
+            404,
         )
 
     product_schema = ProductSchema()
@@ -47,10 +48,17 @@ def get_all_products() -> "list[dict]":
 
 def delete_product(product_code: int) -> str:
     result = get_product_by_code(SessionLocal(), product_code)
+    if (result == None):
+        return jsonify({"Response" : "O produto não foi encontrado"}), 404
+
+    item: bool = get_product_item_exist(SessionLocal(), result.id)
+
+    if (item):
+        return jsonify({"Response": "O Produto não pode ser deletado, há entradas e saídas cadastradas."})
+
     delete = remove_product(SessionLocal(), result)
 
     return jsonify({"Response": f"{delete}"}), 200
-
 
 def process_csv_file() -> str:
     user_id = request.form.get("user_id")
@@ -58,7 +66,7 @@ def process_csv_file() -> str:
         return jsonify({"error": "id do usuário não informado"}), 400
 
     if get_user_by_id(SessionLocal(), user_id) == None:
-        return jsonify({"error": "usuário não enconrado"}), 400
+        return jsonify({"error": "usuário não enconrado"}), 404
 
     if "file" not in request.files:
         return jsonify({"error": "Nenhum arquivo enviado"}), 400

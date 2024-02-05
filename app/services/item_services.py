@@ -40,6 +40,15 @@ def get_all_entry_item(db: sessionmaker) -> dict:
         data.append({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
     return data
 
+def get_product_item_exist(db: sessionmaker, product_id: int) -> bool:
+    entry_data = db.query(EntryItem).filter(EntryItem.product_id == product_id).all()
+    output_data = db.query(OutputItem).filter(OutputItem.product_id == product_id).all()
+
+    if (len(entry_data) < 1 and len(output_data) < 1):
+        return False
+    
+    return True
+
 def get_all_output_item(db: sessionmaker) -> dict:
     data: list = []
     result = db.query(
