@@ -1,6 +1,8 @@
 from config import app
 from model.product import Product
 from model.user import User
+from model.item import EntryItem
+from model.item import OutputItem
 from config import engine
 from config import Base
 from api.routes.product_routes import create_product
@@ -11,7 +13,10 @@ from api.routes.product_routes import process_csv_file
 from api.routes.user_routes import get_all
 from api.routes.user_routes import delete_user
 from api.routes.user_routes import create_user
-
+from api.routes.item_routes import entry_item
+from api.routes.item_routes import output_item
+from api.routes.item_routes import get_entry
+from api.routes.item_routes import get_output
 
 Base.metadata.create_all(bind=engine)
 
@@ -24,6 +29,11 @@ app.route("/api/product/upload-csv", methods=["POST"])(process_csv_file)
 app.route("/api/user", methods=["POST"])(create_user)
 app.route("/api/user/<int:id>", methods=["DELETE"])(delete_user)
 app.route("/api/user", methods=["GET"])(get_all)
+
+app.route("/api/item/entry", methods=["POST"])(entry_item)
+app.route("/api/item/output", methods=["POST"])(output_item)
+app.route("/api/item/entry", methods=["GET"])(get_entry)
+app.route("/api/item/output", methods=["GET"])(get_output)
 
 if __name__ == "__main__":
     app.run(debug=True)

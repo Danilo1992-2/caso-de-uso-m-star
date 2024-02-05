@@ -33,6 +33,10 @@ def get_product_by_code(db: sessionmaker, product_code: str) -> Product:
     db.close_all()
     return data
 
+def get_product_by_id(db: sessionmaker, product_id: int) -> Product:
+    data = db.query(Product).filter(Product.id == product_id).first()
+    db.close_all()
+    return data
 
 def get_all_product(db: sessionmaker) -> "list[Product]":
     data = db.query(Product).all()
