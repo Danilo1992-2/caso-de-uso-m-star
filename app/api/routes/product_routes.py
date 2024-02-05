@@ -1,6 +1,8 @@
 from flask import jsonify, request
 from config import SessionLocal
 from model.product import Product
+from model.item import EntryItem
+from model.item import OutputItem
 import pandas as pd
 from schemas.product_schema import ProductSchema
 from schemas.product_schema import ProductItemSchema
@@ -99,14 +101,34 @@ def process_csv_file() -> str:
 
 def get_all_product_entry_data() -> dict:
     data = get_all_product_entry(SessionLocal())
-    print(data)
-    produt_item_schema = ProductItemSchema(many=True)
-    product_item_data: "list[dict]" = produt_item_schema.dump(data)
-    return jsonify({"Response": product_item_data}), 200
+    itens:'list[dict]' = []
+    for item in data:
+        values_dict: dict = {
+            "product_name": item.Product.product_name,
+            "product_code":item.Product.product_code,
+            "product_type":item.Product.product_type,
+            "product_manufacturer":item.Product.product_manufacturer,
+            "description":item.Product.description,
+            "date": item.EntryItem.date,
+            "status":"entrada"
+        }
+        itens.append(values_dict)
+    return jsonify({"Response": itens}), 200
 
 
 def get_all_product_output_data() -> dict:
     data = get_all_product_output(SessionLocal())
-    produt_item_schema = ProductItemSchema(many=True)
-    product_item_data: "list[dict]" = produt_item_schema.dump(data)
-    return jsonify({"Response": product_item_data}), 200
+    itens:'list[dict]' = []
+    for item in data:
+        values_dict: dict = {
+            "product_name": item.Product.product_name,
+            "product_code":item.Product.product_code,
+            "product_type":item.Product.product_type,
+            "product_manufacturer":item.Product.product_manufacturer,
+            "description":item.Product.description,
+            "status_date": item.OutputItem.date,
+            "status":"saida"
+        }
+        itens.append(values_dict)
+    return jsonify({"Response": itens}), 200
+
