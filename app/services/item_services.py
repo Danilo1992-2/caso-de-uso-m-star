@@ -30,23 +30,23 @@ def output_item(db: sessionmaker, new_item_data: OutputItem) -> str:
     return f"{new_item_data['product_id']} - registrado"
 
 def get_all_entry_item(db: sessionmaker) -> dict:
-    data: dict = {}
+    data: list = []
     result = db.query(
             EntryItem.date,
-            func.sum(EntryItem.product_id).label('product_id')
+            func.count(EntryItem.date).label('product_id')
         ).group_by(EntryItem.date).all()
     
     for row in result:
-        data.update({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
+        data.append({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
     return data
 
 def get_all_output_item(db: sessionmaker) -> dict:
-    data: dict = {}
+    data: list = []
     result = db.query(
             OutputItem.date,
-            func.sum(OutputItem.product_id).label('product_id')
+            func.count(OutputItem.date).label('product_id')
         ).group_by(OutputItem.date).all()
 
     for row in result:
-        data.update({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
+        data.append({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
     return data
