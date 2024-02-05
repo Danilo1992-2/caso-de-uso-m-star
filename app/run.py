@@ -17,6 +17,8 @@ from api.routes.item_routes import entry_item
 from api.routes.item_routes import output_item
 from api.routes.item_routes import get_entry
 from api.routes.item_routes import get_output
+from api.routes.product_routes import get_all_product_entry_data
+from api.routes.product_routes import get_all_product_output_data
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,6 +27,9 @@ app.route("/api/product/<int:product_code>", methods=["GET"])(product_by_code)
 app.route("/api/product", methods=["GET"])(get_all_products)
 app.route("/api/product/<int:product_code>", methods=["DELETE"])(delete_product)
 app.route("/api/product/upload-csv", methods=["POST"])(process_csv_file)
+app.route("/api/product/entry", methods=["GET"])(get_all_product_entry_data)
+app.route("/api/product/output", methods=["GET"])(get_all_product_output_data)
+
 
 app.route("/api/user", methods=["POST"])(create_user)
 app.route("/api/user/<int:id>", methods=["DELETE"])(delete_user)

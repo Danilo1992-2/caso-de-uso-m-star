@@ -3,6 +3,7 @@ from config import SessionLocal
 from model.product import Product
 import pandas as pd
 from schemas.product_schema import ProductSchema
+from schemas.product_schema import ProductItemSchema
 from services.product_services import add_product
 from services.product_services import get_product_by_code
 from services.product_services import get_all_product
@@ -10,10 +11,16 @@ from services.product_services import remove_product
 from services.product_services import record_csv_db
 from services.user_services import get_user_by_id
 from services.item_services import get_product_item_exist
-
+from services.item_services import get_all_product_entry
+from services.item_services import get_all_product_output
 
 def create_product() -> str:
     data: Product = request.get_json()
+    
+    result = get_product_by_code(SessionLocal(), data['product_code'])
+    if (result != None):
+        return jsonify({"Response" : "O produto já existe"}), 404
+
     product_schema = ProductSchema()
     errors = product_schema.validate(data)
 
@@ -39,7 +46,7 @@ def product_by_code(product_code: int) -> dict:
     return jsonify({"Response": data}), 200
 
 
-def get_all_products() -> "list[dict]":
+def get_all_products() -> dict:
     result: "list[Product]" = get_all_product(SessionLocal())
     product_schema = ProductSchema(many=True)
     products_data: "list[dict]" = product_schema.dump(result)
@@ -54,7 +61,7 @@ def delete_product(product_code: int) -> str:
     item: bool = get_product_item_exist(SessionLocal(), result.id)
 
     if (item):
-        return jsonify({"Response": "O Produto não pode ser deletado, há entradas e saídas cadastradas."})
+        return jsonify({"Response": "O Produto não pode ser deletado, há entradas e/ou saídas cadastradas."}), 400
 
     delete = remove_product(SessionLocal(), result)
 
@@ -79,3 +86,16 @@ def process_csv_file() -> str:
     record_csv_db(SessionLocal(), user_id)
 
     return jsonify({"Response": "Arquivo registrado"})
+
+def get_all_product_entry_data() -> dict:
+    data = get_all_product_entry(SessionLocal())
+    print(data)
+    produt_item_schema = ProductItemSchema(many=True)
+    product_item_data: "list[dict]" = produt_item_schema.dump(data)
+    return jsonify({"Response": product_item_data}), 200
+    
+def get_all_product_output_data() -> dict:
+    data = get_all_product_output(SessionLocal())
+    produt_item_schema = ProductItemSchema(many=True)
+    product_item_data: "list[dict]" = produt_item_schema.dump(data)
+    return jsonify({"Response": product_item_data}), 200

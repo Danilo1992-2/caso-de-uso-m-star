@@ -3,13 +3,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func
 from model.item import EntryItem
 from model.item import OutputItem
+from model.product import Product
 from datetime import datetime
 import os
 
 
 def entry_item(db: sessionmaker, new_item_data: EntryItem) -> str:
     new_item = EntryItem()
-    new_item.date = new_item_data['date']
+    new_item.date = datetime.now()
     new_item.product_id = new_item_data['product_id']
     
     db.add(new_item)
@@ -59,3 +60,9 @@ def get_all_output_item(db: sessionmaker) -> dict:
     for row in result:
         data.append({'Data': f'{row.date}', 'Total': f'{row.product_id}'})
     return data
+
+def get_all_product_output(db: sessionmaker):
+    data = db.query(OutputItem, Product).join(Product, OutputItem.product_id == Product.id).all()
+    return data
+def get_all_product_entry(db: sessionmaker):
+    return db.query(EntryItem, Product).join(Product, EntryItem.product_id == Product.id).all()
