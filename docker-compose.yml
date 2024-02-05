@@ -1,0 +1,21 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app/run.py
+      - FLASK_RUN_HOST=0.0.0.0
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: <root_password>
+      MYSQL_DATABASE: <database_name>
+      MYSQL_USER: <mysql_user>
+      MYSQL_PASSWORD: <mysql_password>
+    ports:
+      - "3306:3306"

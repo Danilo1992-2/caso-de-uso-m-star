@@ -10,6 +10,7 @@ class ProductSchema(Schema):
     description: str = fields.Str(required=True)
     user_id: int = fields.Integer()
 
+
 class ProductItemSchema(Schema):
     product_name: str = fields.Str(required=True)
     product_code: str = fields.Str(required=True)

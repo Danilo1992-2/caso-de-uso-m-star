@@ -14,12 +14,13 @@ from services.item_services import get_product_item_exist
 from services.item_services import get_all_product_entry
 from services.item_services import get_all_product_output
 
+
 def create_product() -> str:
     data: Product = request.get_json()
-    
-    result = get_product_by_code(SessionLocal(), data['product_code'])
-    if (result != None):
-        return jsonify({"Response" : "O produto já existe"}), 404
+
+    result = get_product_by_code(SessionLocal(), data["product_code"])
+    if result != None:
+        return jsonify({"Response": "O produto já existe"}), 404
 
     product_schema = ProductSchema()
     errors = product_schema.validate(data)
@@ -55,17 +56,25 @@ def get_all_products() -> dict:
 
 def delete_product(product_code: int) -> str:
     result = get_product_by_code(SessionLocal(), product_code)
-    if (result == None):
-        return jsonify({"Response" : "O produto não foi encontrado"}), 404
+    if result == None:
+        return jsonify({"Response": "O produto não foi encontrado"}), 404
 
     item: bool = get_product_item_exist(SessionLocal(), result.id)
 
-    if (item):
-        return jsonify({"Response": "O Produto não pode ser deletado, há entradas e/ou saídas cadastradas."}), 400
+    if item:
+        return (
+            jsonify(
+                {
+                    "Response": "O Produto não pode ser deletado, há entradas e/ou saídas cadastradas."
+                }
+            ),
+            400,
+        )
 
     delete = remove_product(SessionLocal(), result)
 
     return jsonify({"Response": f"{delete}"}), 200
+
 
 def process_csv_file() -> str:
     user_id = request.form.get("user_id")
@@ -87,13 +96,15 @@ def process_csv_file() -> str:
 
     return jsonify({"Response": "Arquivo registrado"})
 
+
 def get_all_product_entry_data() -> dict:
     data = get_all_product_entry(SessionLocal())
     print(data)
     produt_item_schema = ProductItemSchema(many=True)
     product_item_data: "list[dict]" = produt_item_schema.dump(data)
     return jsonify({"Response": product_item_data}), 200
-    
+
+
 def get_all_product_output_data() -> dict:
     data = get_all_product_output(SessionLocal())
     produt_item_schema = ProductItemSchema(many=True)
