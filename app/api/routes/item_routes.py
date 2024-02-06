@@ -80,8 +80,7 @@ def get_output() -> dict:
 
     return jsonify({"Response": data}), 200
 
-def get_count_product_available():
-    data: dict = request.get_json()
-    count_product: int = get_count_available_product(SessionLocal(), data["product_id"])
+def get_count_product_available(product_id: int):
+    count_product: int = get_count_available_product(SessionLocal(), product_id)
     
     return jsonify({"Response": count_product})

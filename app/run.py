@@ -40,7 +40,7 @@ app.route("/api/item/entry", methods=["POST"])(entry_item)
 app.route("/api/item/output", methods=["POST"])(output_item)
 app.route("/api/item/entry", methods=["GET"])(get_entry)
 app.route("/api/item/output", methods=["GET"])(get_output)
-app.route("/api/item/avalible", methods=["POST"])(get_count_product_available)
+app.route("/api/item/avalible/<int:product_id>", methods=["GET"])(get_count_product_available)
 
 if __name__ == "__main__":
     app.run(debug=True)
