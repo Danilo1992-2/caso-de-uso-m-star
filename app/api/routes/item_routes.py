@@ -1,4 +1,5 @@
 from flask import jsonify, request
+
 from config import SessionLocal
 from model.item import EntryItem
 from model.item import OutputItem
@@ -11,6 +12,7 @@ from services.item_services import get_all_entry_item
 from services.item_services import get_all_output_item
 from services.item_services import get_first_produto_avalible
 from services.item_services import update_item_sale
+
 
 def entry_item() -> str:
     data: EntryItem = request.get_json()
@@ -25,10 +27,10 @@ def entry_item() -> str:
 
     if errors:
         return jsonify({"error": errors}), 400
-    
+
     item_data: dict = item_schema.load(data)
     result: str = entry(SessionLocal(), item_data)
-    
+
     return jsonify({"Response": result}), 200
 
 
@@ -40,10 +42,12 @@ def output_item() -> str:
     if product == None:
         return jsonify({"error": "Produto não encontrado"}), 404
 
-    product_avalible: bool = get_first_produto_avalible(SessionLocal(), data["product_id"])
-    
+    product_avalible: bool = get_first_produto_avalible(
+        SessionLocal(), data["product_id"]
+    )
+
     if not product_avalible:
-        return  jsonify({"error": "Produto indisponível para venda."}), 400
+        return jsonify({"error": "Produto indisponível para venda."}), 400
 
     item_schema = itemSchema()
     errors = item_schema.validate(data)
@@ -53,7 +57,7 @@ def output_item() -> str:
 
     item_data: dict = item_schema.load(data)
     result: str = output(SessionLocal(), item_data)
-    
+
     update_item_sale(SessionLocal(), data["product_id"])
 
     return jsonify({"Response": result}), 200

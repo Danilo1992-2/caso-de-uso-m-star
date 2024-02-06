@@ -1,10 +1,12 @@
-from flask import jsonify, request
-from config import SessionLocal
 from datetime import datetime
+
+from flask import jsonify, request
+import pandas as pd
+
+from config import SessionLocal
 from model.product import Product
 from model.item import EntryItem
 from model.item import OutputItem
-import pandas as pd
 from schemas.product_schema import ProductSchema
 from schemas.product_schema import ProductItemSchema
 from services.product_services import add_product
@@ -102,18 +104,18 @@ def process_csv_file() -> str:
 
 def get_all_product_entry_data() -> dict:
     data = get_all_product_entry(SessionLocal())
-    itens:'list[dict]' = []
+    itens: "list[dict]" = []
     date_format = "%d/%m/%Y"
 
     for item in data:
         values_dict: dict = {
             "product_name": item.Product.product_name,
-            "product_code":item.Product.product_code,
-            "product_type":item.Product.product_type,
-            "product_manufacturer":item.Product.product_manufacturer,
-            "description":item.Product.description,
+            "product_code": item.Product.product_code,
+            "product_type": item.Product.product_type,
+            "product_manufacturer": item.Product.product_manufacturer,
+            "description": item.Product.description,
             "status_date": datetime.strftime(item.EntryItem.date, date_format),
-            "status": "disponivel" if item.EntryItem.available == 0  else "indisponivel" 
+            "status": "disponivel" if item.EntryItem.available == 0 else "indisponivel",
         }
         itens.append(values_dict)
     return jsonify({"Response": itens}), 200
@@ -121,19 +123,18 @@ def get_all_product_entry_data() -> dict:
 
 def get_all_product_output_data() -> dict:
     data = get_all_product_output(SessionLocal())
-    itens:'list[dict]' = []
+    itens: "list[dict]" = []
     date_format = "%d/%m/%Y"
 
     for item in data:
         values_dict: dict = {
             "product_name": item.Product.product_name,
-            "product_code":item.Product.product_code,
-            "product_type":item.Product.product_type,
-            "product_manufacturer":item.Product.product_manufacturer,
-            "description":item.Product.description,
+            "product_code": item.Product.product_code,
+            "product_type": item.Product.product_type,
+            "product_manufacturer": item.Product.product_manufacturer,
+            "description": item.Product.description,
             "status_date": datetime.strftime(item.OutputItem.date, date_format),
-            "status":"saida"
+            "status": "saida",
         }
         itens.append(values_dict)
     return jsonify({"Response": itens}), 200
-
