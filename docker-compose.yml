@@ -1,25 +1,24 @@
 version: '3'
+
 services:
-  web:
+  app:
     build: .
     ports:
       - "5000:5000"
     environment:
-      - FLASK_APP=app/run.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - MYSQL_CONNECTION_STRING=mysql://teste:teste@db/teste_db
-    command: >
-      bash -c "pip install -r requirements.txt && flask run --host=0.0.0.0"
-
+      MYSQL_DATABASE: Contash
+      MYSQL_USER: root
+      MYSQL_PASSWORD: shaman
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
     depends_on:
-      - mysql
+      - db
 
-  mysql:
-    image: mysql:latest
+  db:
+    image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: teste
-      MYSQL_DATABASE: testdb
-      MYSQL_USER: teste
-      MYSQL_PASSWORD: teste
+      MYSQL_DATABASE: Contash
+      MYSQL_USER: root
+      MYSQL_PASSWORD: shaman
     ports:
       - "3306:3306"
