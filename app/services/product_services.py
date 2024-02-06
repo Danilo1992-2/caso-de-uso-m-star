@@ -63,4 +63,5 @@ def record_csv_db(db: sessionmaker, user_id: int) -> str:
         db.add(product)
     db.commit()
     os.remove(file_path)
+    db.close_all()
     return "OK"

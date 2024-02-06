@@ -67,19 +67,32 @@ def get_all_output_item(db: sessionmaker) -> dict:
         data.append({"Data": f"{row.date}", "Total": f"{row.product_id}"})
     return data
 
+def get_first_produto_avalible(db: sessionmaker, product_id: int) -> bool:
+    data: EntryItem = db.query(EntryItem).filter(EntryItem.product_id == product_id, EntryItem.available == False).all()
+    if len(data) > 0:
+        return True
+    False
+    
+def update_item_sale(db: sessionmaker, product_id: int):
+    data: EntryItem = db.query(EntryItem).filter(EntryItem.product_id == product_id, EntryItem.available == False).first()
+    data.available = True
+    db.commit()
+    db.close_all()
+    return True
+
 
 def get_all_product_output(db: sessionmaker):
-    data = (
+    data: list = (
         db.query(OutputItem, Product)
         .join(Product, OutputItem.product_id == Product.id)
         .all()
     )
+    db.close_all()
     return data
 
 
 def get_all_product_entry(db: sessionmaker):
-    return (
-        db.query(EntryItem, Product)
-        .join(Product, EntryItem.product_id == Product.id)
-        .all()
-    )
+    data: list = db.query(EntryItem, Product).join(Product, EntryItem.product_id == Product.id).all()
+    db.close_all()
+    return data
+        
