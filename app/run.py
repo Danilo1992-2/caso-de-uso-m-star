@@ -19,6 +19,7 @@ from api.routes.item_routes import get_entry
 from api.routes.item_routes import get_output
 from api.routes.product_routes import get_all_product_entry_data
 from api.routes.product_routes import get_all_product_output_data
+from api.routes.item_routes import get_count_product_available
 
 Base.metadata.create_all(bind=engine)
 
@@ -39,6 +40,7 @@ app.route("/api/item/entry", methods=["POST"])(entry_item)
 app.route("/api/item/output", methods=["POST"])(output_item)
 app.route("/api/item/entry", methods=["GET"])(get_entry)
 app.route("/api/item/output", methods=["GET"])(get_output)
+app.route("/api/item/avalible", methods=["POST"])(get_count_product_available)
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -12,7 +12,7 @@ from services.item_services import get_all_entry_item
 from services.item_services import get_all_output_item
 from services.item_services import get_first_produto_avalible
 from services.item_services import update_item_sale
-
+from services.item_services import get_count_available_product
 
 def entry_item() -> str:
     data: EntryItem = request.get_json()
@@ -79,3 +79,9 @@ def get_output() -> dict:
         return jsonify({"Return": data}), 404
 
     return jsonify({"Response": data}), 200
+
+def get_count_product_available():
+    data: dict = request.get_json()
+    count_product: int = get_count_available_product(SessionLocal(), data["product_id"])
+    
+    return jsonify({"Response": count_product})

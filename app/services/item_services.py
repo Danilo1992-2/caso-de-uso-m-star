@@ -90,6 +90,9 @@ def update_item_sale(db: sessionmaker, product_id: int):
     db.close_all()
     return True
 
+def get_count_available_product(db: sessionmaker, product_id: int) -> int:
+    data = db.query(EntryItem).filter(EntryItem.available == False, EntryItem.product_id == product_id).count()
+    return data
 
 def get_all_product_output(db: sessionmaker):
     data: list = (
